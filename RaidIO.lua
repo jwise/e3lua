@@ -4,7 +4,7 @@ local bit = require"bit"
 
 RaidIO = {}
 RaidIO.CHUNK_SIZE = 65536
-RaidIO.SECTORS_PER_CHUNK = bit.rshift(RIO.CHUNK_SIZE, 9)
+RaidIO.SECTORS_PER_CHUNK = bit.rshift(RaidIO.CHUNK_SIZE, 9)
 RaidIO.LVM_OFFSET = 384
 RaidIO.RAID_DISKS = 3
 RaidIO.DATA_DISKS = 2
