@@ -23,6 +23,8 @@ function RaidIO:open()
 	for i=1,3 do
 		self.disks[i] = self.disks[i] or assert(io.open(self.prefix .. (i-1), "rb"))
 	end
+	
+	return self
 end
 
 function RaidIO:close()
@@ -30,6 +32,8 @@ function RaidIO:close()
 		f:close()
 		self.disks[i] = nil
 	end
+	
+	return self
 end
 
 function RaidIO:compute_disk(log)

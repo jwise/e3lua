@@ -74,6 +74,8 @@ function Ext3SB:read(disk, sbsector)
 	local data = disk:read_sector(sbsector)
 	local st = serial.read.struct(serial.buffer(data), self.format)
 	
+	self.disk = disk
+	
 	for k,v in pairs(st) do
 		self[k] = v
 	end
