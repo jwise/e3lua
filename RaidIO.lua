@@ -5,6 +5,7 @@ local bit = require"bit"
 RaidIO = {}
 RaidIO.CHUNK_SIZE = 65536
 RaidIO.SECTORS_PER_CHUNK = bit.rshift(RaidIO.CHUNK_SIZE, 9)
+RaidIO.BYTES_PER_SECTOR = 512 -- er, does this belong here?
 RaidIO.LVM_OFFSET = 384
 RaidIO.RAID_DISKS = 3
 RaidIO.DATA_DISKS = 2
