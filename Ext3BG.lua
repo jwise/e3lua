@@ -30,9 +30,9 @@ function Ext3BG:read(bg)
         local sector = (fs.sb.block_group_nr * fs.sb.blocks_per_group + 1) * sectors_per_block
         -- 32: sizeof(ext3 block descriptor); there is probably a nicer way
         -- to get this value, but i don't know what it is. halp, lunary. --car
-        sector = sector + (bg * 32) / self.disk.BYTES_PER_SECTOR
+        sector = sector + (bg * 32) / fs.disk.BYTES_PER_SECTOR
 
-        local data = fs.disk:read_sector(sector):sub((bg * 32) % self.disk.BYTES_PER_SECTOR + 1)
+        local data = fs.disk:read_sector(sector):sub((bg * 32) % fs.disk.BYTES_PER_SECTOR + 1)
         local desc = serial.read.struct(serial.buffer(data), self.format)
 
         -- copied from Ext3SB.lua ... is this necessary? i do not know.

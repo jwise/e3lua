@@ -14,8 +14,8 @@ end
 
 function Ext3FS:open(disk)
         self.disk = disk or self.disk
-        self.sb = Ext3SB:new()
-        self.sb:read(disk)
+        self.sb = Ext3SB:new{disk = self.disk}
+        self.sb:read()
         self.block_size = bit.lshift(1024, self.sb.log_block_size)
         
         return self

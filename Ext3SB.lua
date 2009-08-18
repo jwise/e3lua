@@ -68,10 +68,10 @@ function Ext3SB:new(o)
 	return o
 end
 
-function Ext3SB:read(disk, sbsector)
+function Ext3SB:read(sbsector)
 	sbsector = sbsector or 2
 
-	local data = disk:read_sector(sbsector)
+	local data = self.disk:read_sector(sbsector)
 	local st = serial.read.struct(serial.buffer(data), self.format)
 	
 	self.disk = disk
