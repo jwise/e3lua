@@ -1,6 +1,7 @@
 local bit = require"bit"
 local serial = require"serial"
 require"Ext3SB"
+require"Ext3Inode"
 
 Ext3FS = {}
 
@@ -27,16 +28,14 @@ function Ext3FS:read_block(blockn)
         local start = blockn * nsectors
         local data = ""
 
-        for i = 0,nsectors do
+        for i = 0,(nsectors-1) do
                 data = data .. self.disk:read_sector(start+i)
         end
 
         return data
 end
 
---[[
 function Ext3FS:inode(n)
-       local inode = Ext3Inode.new(...?)
+       local inode = Ext3Inode:new({fs = self})
        return inode:read(n)
 end
-]]--
