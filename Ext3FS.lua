@@ -23,19 +23,22 @@ function Ext3FS:open(disk)
 end
 
 -- XXX will need alternate read modes to be passed through
-function Ext3FS:read_block(blockn)
+function Ext3FS:read_block(blockn, islame)
 	local nsectors = self.block_size / self.disk.BYTES_PER_SECTOR
 	local start = blockn * nsectors
 	local data = ""
 
 	for i = 0,(nsectors-1) do
-		data = data .. self.disk:read_sector(start+i)
+		data = data .. self.disk:read_sector(start+i, islame)
 	end
 
 	return data
 end
 
-function Ext3FS:inode(n)
-	local inode = Ext3Inode:new({fs = self})
-	return inode:read(n)
+function Ext3FS:inode(n, lame)
+	local inode = Ext3Inode:new({fs = self, lame = lame})
+	if type(n) == 'table' then
+		n = n.inode
+	end
+	return inode:read(n, lame)
 end

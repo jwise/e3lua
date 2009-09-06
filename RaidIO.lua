@@ -62,16 +62,18 @@ function RaidIO:read_sector(sector, mode)
 	
 	dd_idx = dd_idx + 1
 	if mode then
-		if mode == 0 then
+		if mode == 0 or mode == false then
 			-- nothing!
-		elseif mode == 1 then
+		elseif mode == 1 or mode == true then
 			if dd_idx == 2 then
 				dd_idx = 3
 			elseif dd_idx == 3 then
 				dd_idx = 2
+			else
+				print("Sector "..tostring(sector).." is not lame...")
 			end
 		else
-			error("invalid mode "..mode.." for RaidIO:read_sector", 2)
+			error("invalid mode "..tostring(mode).." for RaidIO:read_sector", 2)
 		end
 	end
 	

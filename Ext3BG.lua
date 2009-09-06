@@ -23,8 +23,9 @@ function Ext3BG:new(o)
 	return o
 end
 
-function Ext3BG:read(bg)
+function Ext3BG:read(bg, lame)
 	local fs = self.fs
+	local islame = lame and lame.blockgroup
 	
 	local sectors_per_block = fs.block_size / fs.disk.BYTES_PER_SECTOR
 	local sector = (fs.sb.block_group_nr * fs.sb.blocks_per_group + 1) * sectors_per_block
@@ -32,7 +33,7 @@ function Ext3BG:read(bg)
 	-- to get this value, but i don't know what it is. halp, lunary. --car
 	sector = sector + (bg * 32) / fs.disk.BYTES_PER_SECTOR
 
-	local data = fs.disk:read_sector(sector):sub((bg * 32) % fs.disk.BYTES_PER_SECTOR + 1)
+	local data = fs.disk:read_sector(sector, islame):sub((bg * 32) % fs.disk.BYTES_PER_SECTOR + 1)
 	local desc = serial.read.struct(serial.buffer(data), self.format)
 
 	-- copied from Ext3SB.lua ... is this necessary? i do not know.

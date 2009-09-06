@@ -81,7 +81,7 @@ function Ext3IFile:readdir()
 	end
 	
 	local de = serial.read.fstruct(self, function(self)
-		self 'inode' ('uint32', 'le')
+		self 'inodenum' ('uint32', 'le')
 		self 'rec_len' ('uint16', 'le')
 		self 'name_len' ('uint8')
 		self 'file_type' ('uint8')
@@ -106,6 +106,16 @@ function Ext3IFile:readdir()
 		de.filetype.SYMLINK = true
 	else
 		de.filetype.UNKNOWN = ft
+	end
+	
+	de.inode = function (...)
+		return self.fs:inode(de.inodenum, ...)
+	end
+	de.file = function (...)
+		return self.fs:inode(de.inodenum, ...):file(...)
+	end
+	de.directory = function (...)
+		return self.fs:inode(de.inodenum, ...):directory(...)
 	end
 	
 	return de

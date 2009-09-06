@@ -55,20 +55,21 @@ function Ext3Inode:new(o)
 	return o
 end
 
-function Ext3Inode:read(n)
+function Ext3Inode:read(n, lame)
 	-- approximately copying from inode.c, for better or for worse
 	local inodes_per_block = self.fs.block_size / self.fs.sb.inode_size
 	local bgn = (n-1) / self.fs.sb.inodes_per_group
+	local islame = lame and lame.inode
 
 	-- help, i don't know lua, this may be dangerous
 	local bg = Ext3BG:new{fs = self.fs}
-	bg:read(bgn)
+	bg:read(bgn, lame)
 	-- "???"
 	
 	local curblock = bg.inode_table + ((n - 1) % self.fs.sb.inodes_per_group) / inodes_per_block
 	local offset = self.fs.sb.inode_size * ((n - 1) % inodes_per_block)
 	 
-	local data = self.fs:read_block(curblock):sub(offset+1)
+	local data = self.fs:read_block(curblock, islame):sub(offset+1)
 	
 	local foo = serial.read.struct(serial.buffer(data), self.format)
 
@@ -104,6 +105,7 @@ function Ext3Inode:read(n)
 	for k,v in pairs(foo) do
 		self[k] = v
 	end
+	self.lame = lame
 
 	return self
 end
@@ -140,14 +142,19 @@ end
 
 function Ext3Inode:block_read(blockno)
 	local b = self:block_lookup(blockno)
+	local islame = self.lame and self.lame.data
 	
 	if b == 0 then
 		return string.rep(string.char(0), self.fs.block_size) 
 	else
-		return self.fs:read_block(b)
+		return self.fs:read_block(b, islame)
 	end
 end
 
 function Ext3Inode:file()
-	return Ext3IFile:new{inode = self}
+	return Ext3IFile:new{inode = self, lame = self.lame}
+end
+
+function Ext3Inode:directory()
+	return self:file():directory()
 end
