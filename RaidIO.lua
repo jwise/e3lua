@@ -61,6 +61,15 @@ function RaidIO:read_sector(sector, mode)
 	local phys, dd_idx, pd_idx = self:compute_disk(sector + self.LVM_OFFSET)
 	
 	dd_idx = dd_idx + 1
+	
+	-- For some reason, disks 2 and 3 are swapped *to start with*. ???
+	-- So, deswap them.
+	if dd_idx == 2 then
+		dd_idx = 3
+	elseif dd_idx == 3 then
+		dd_idx = 2
+	end
+	
 	if mode then
 		if mode == 0 or mode == false then
 			-- nothing!
